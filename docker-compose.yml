@@ -10,9 +10,14 @@ services:
       LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY}
       LLM_PROXY: "True"
       LITELLM_ADMIN_CORS_ALLOWED_ORIGINS: "*"
-      PROXY_BASIC_AUTH: "False"
+      # Google Cloud / Vertex AI
+      GOOGLE_VERTEX_AI_PROJECT: ${GCP_PROJECT}
+      GOOGLE_VERTEX_AI_LOCATION: ${GCP_LOCATION:-us-central1}
+      GOOGLE_APPLICATION_CREDENTIALS: /app/credentials/gcp-service-account.json
     env_file:
       - .env
+    volumes:
+      - gcp-service-account:/app/credentials/gcp-service-account.json:ro
     depends_on:
       db:
         condition: service_healthy
@@ -50,3 +55,4 @@ services:
 
 volumes:
   litellm_pgdata:
+  gcp-service-account:
